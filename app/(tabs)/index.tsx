@@ -25,7 +25,11 @@ export default function HomeScreen() {
       .then(response => response.json())
       .then(result => setData(result))
       .catch(error => console.log('error', error));
+
   },[])
+
+ 
+  console.log(data?.results)
 
   return (
     <ParallaxScrollView
@@ -42,9 +46,16 @@ export default function HomeScreen() {
       </ThemedView>
       {data?.results.map((film: any) => (
          <ThemedView style={{}}>
+          <Image 
+          style={styles.tinyLogo}
+          source={{
+            uri: 'http://image.tmdb.org/t/p/w500/'+film.poster_path,
+          }}
+        />
          <ThemedText>{film.original_name}</ThemedText>
          <ThemedText>{film.overview}</ThemedText>
        </ThemedView>
+       
       ))}
     </ParallaxScrollView>
   );
@@ -67,4 +78,8 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+  tinyLogo: {
+    width: 200,
+    height: 200,
+  }
 });
