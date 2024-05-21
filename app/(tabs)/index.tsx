@@ -1,12 +1,32 @@
 import { Image, StyleSheet, Platform } from 'react-native';
-
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Link } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 
 export default function HomeScreen() {
+
+  const [data, setData] = useState<any>()
+
+  useEffect(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE");
+    myHeaders.append("accept", "application/json");
+  
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    } as const
+
+    fetch("https://api.themoviedb.org/3/discover/tv?language=it-IT", requestOptions)
+      .then(response => response.json())
+      .then(result => setData(result))
+      .catch(error => console.log('error', error));
+  },[])
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -20,36 +40,12 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome to favelas</ThemedText>
         <HelloWave />
       </ThemedView>
-      <Link href="/gg">
-        non esiste
-      </Link>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      {data?.results.map((film: any) => (
+         <ThemedView style={{}}>
+         <ThemedText>{film.original_name}</ThemedText>
+         <ThemedText>{film.overview}</ThemedText>
+       </ThemedView>
+      ))}
     </ParallaxScrollView>
   );
 }
