@@ -1,14 +1,17 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, Text, Pressable } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+
 
 export default function HomeScreen() {
 
   const [data, setData] = useState<any>()
+
+  const router = useRouter()
 
   useEffect(() => {
     var myHeaders = new Headers();
@@ -21,15 +24,19 @@ export default function HomeScreen() {
       redirect: 'follow'
     } as const
 
-    fetch("https://api.themoviedb.org/3/discover/tv?language=it-IT", requestOptions)
+    fetch("https://api.themoviedb.org/3/discover/movie?language=it-IT", requestOptions)
       .then(response => response.json())
       .then(result => setData(result))
       .catch(error => console.log('error', error));
 
   },[])
 
+  const goToDetail = (id: string) => {
+    router.push("/detail/" + id)
+  }
  
   console.log(data?.results)
+  
 
   return (
     <ParallaxScrollView
@@ -45,17 +52,16 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       {data?.results.map((film: any) => (
-         <ThemedView style={{}}>
+         <Pressable style={styles.Index_content} key={film.id} onPress={() => goToDetail(film.id)}>
           <Image 
           style={styles.tinyLogo}
           source={{
             uri: 'http://image.tmdb.org/t/p/w500/'+film.poster_path,
           }}
         />
-         <ThemedText>{film.original_name}</ThemedText>
-         <ThemedText>{film.overview}</ThemedText>
-       </ThemedView>
-       
+         <ThemedText>{film.original_title}</ThemedText>
+       </Pressable>
+
       ))}
     </ParallaxScrollView>
   );
@@ -81,5 +87,17 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 200,
     height: 200,
+  },
+  baseText: {
+    fontFamily: 'Cochin',
+  },
+  titleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  Index_content: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
   }
 });
