@@ -4,10 +4,10 @@ import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { Image, Platform, StyleSheet } from 'react-native';
+import { Image, Platform, StyleSheet, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import { FullWindowOverlay } from 'react-native-screens';
+import { FullWindowOverlay, isSearchBarAvailableForCurrentPlatform } from 'react-native-screens';
 import { red } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 export default function TabTwoScreen() {
@@ -36,8 +36,6 @@ export default function TabTwoScreen() {
 
     if (!data) return null
 
-    console.log(data)
-
     return (
     <ParallaxScrollView
         headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -53,12 +51,13 @@ export default function TabTwoScreen() {
         <ThemedText>
             {data.vote_average}  ({data.vote_count})
         </ThemedText>
-        <ThemedText>{data.runtime}m    {'\u2B24'}    {data.release_date} </ThemedText>
-        <ThemedText>
-            Overview:
+        <ThemedText style={styles.information}>{data.runtime}m    {'\u2B24'}    {data.release_date} </ThemedText>
+        <ThemedText style={styles.textContent}>
             {data.overview}
         </ThemedText>
-        <ThemedText></ThemedText>
+        <ThemedText>
+
+        </ThemedText>
     </ParallaxScrollView>
     );
 }
@@ -81,5 +80,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 22,
         fontWeight: "bold",
+    },
+    textContent:{
+    },
+    information: {
+        backgroundColor: "red",
+        borderRadius: 7,
+        color: "black",
+        paddingLeft: 10,
     }
 });
