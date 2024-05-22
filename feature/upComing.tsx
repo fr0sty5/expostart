@@ -28,8 +28,6 @@ export default function UpComing() {
 
     }, [])
 
-    console.log("https://image.tmdb.org/t/p/w500" + listUpcoming?.results[0].backdrop_path)
-
     return (
         <>
             <ThemedText style={styles.subTitle}>Upcoming:</ThemedText>
