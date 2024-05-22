@@ -1,8 +1,10 @@
-import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme, FlatList } from 'react-native';
+import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme, FlatList, ImageBackground, Dimensions, useWindowDimensions } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { resolvePlugin } from '@babel/core';
+import { getReactNavigationConfig } from 'expo-router/build/getReactNavigationConfig';
 
 
 export default function HomeScreen() {
@@ -55,6 +57,28 @@ export default function HomeScreen() {
 
   }, [])
 
+  const [listUpcoming, setlistUpcoming] = useState<any>(null)
+
+  useEffect(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE");
+    myHeaders.append("accept", "application/json");
+
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
+      }
+    };
+
+    fetch('https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1', options)
+      .then(response => response.json())
+      .then(response => setlistUpcoming(response))
+      .catch(err => console.error(err));
+
+  }, [])
+
   const [listFilmGenre, setlistFilmGenre] = useState<any>(null)
 
   function ListFilm(id: string) {
@@ -72,50 +96,68 @@ export default function HomeScreen() {
       .catch(err => console.error(err));
   }
 
+  const size = useWindowDimensions();
+
   return (
     <SafeAreaView style={styles.Maincontainer}>
+      <ScrollView showsVerticalScrollIndicator>
+        <ThemedText style={styles.titleText}>Welcome Here</ThemedText>
+        <ThemedText style={styles.subTitle}>Upcoming:</ThemedText>
 
-      <ThemedText style={styles.titleText}>Welcome Here</ThemedText>
-      <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
-      <ScrollView horizontal style={styles.scrollMenu}>
-        {data?.results.map((film: any) => (
-          <Pressable key={film.id} onPress={() => goToDetail(film.id)}>
-            <View style={styles.container_img}>
-              <Image
-                style={styles.img}
-                source={{
-                  uri: 'http://image.tmdb.org/t/p/w500/' + film.poster_path,
-                }} />
-            </View>
-            <ThemedText style={styles.filmTitle} numberOfLines={1}>{film.original_title}</ThemedText>
-          </Pressable>
-        ))}
+        <ScrollView horizontal style={styles.wrapper}>
+          {listUpcoming?.results.map((upcomingFilm: any) => (
+            <Pressable key={upcomingFilm.id} onPress={() => goToDetail(upcomingFilm.id)}>
+                <ImageBackground resizeMode="cover" source={{ uri: "http://image.tmdb.org/t/p/w500/" + upcomingFilm.backdrop_path }} 
+                style={[{ width: (size.width-20), height: (size.width*0.7), justifyContent: "center", marginRight:20, borderRadius: 30}]}>
+                  <ThemedText style={styles.upcomingtext} numberOfLines={1}>
+                    {upcomingFilm.title}
+                  </ThemedText>
+                </ImageBackground>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
+        <ScrollView horizontal style={styles.scrollMenu}>
+          {data?.results.map((film: any) => (
+            <Pressable key={film.id} onPress={() => goToDetail(film.id)}>
+              <View style={styles.container_img}>
+                <Image
+                  style={styles.img}
+                  source={{
+                    uri: 'http://image.tmdb.org/t/p/w500/' + film.poster_path,
+                  }} />
+              </View>
+              <ThemedText style={styles.filmTitle} numberOfLines={1}>{film.original_title}</ThemedText>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        <ThemedText style={styles.subTitle}>Your Choice:</ThemedText>
+        <FlatList
+          horizontal={true}
+          data={genre?.genres}
+          renderItem={({ item }) => <Pressable onPress={() => ListFilm(item.id)}>
+            <ThemedText style={styles.listaGeneri}>{item.name}</ThemedText>
+          </Pressable>}
+          keyExtractor={item => item.id}
+        />
+
+        <ScrollView horizontal>
+          {listFilmGenre?.results.map((filmGenere: any) => (
+            <Pressable key={filmGenere.id} onPress={() => goToDetail(filmGenere.id)}>
+              <View style={styles.container_img}>
+                <Image
+                  style={styles.img}
+                  source={{
+                    uri: 'http://image.tmdb.org/t/p/w500/' + filmGenere.poster_path,
+                  }} />
+              </View>
+              <ThemedText style={styles.filmTitle} numberOfLines={1}>{filmGenere.original_title}</ThemedText>
+            </Pressable>
+          ))}
+        </ScrollView>
       </ScrollView>
-
-      <FlatList
-        horizontal={true}
-        data={genre?.genres}
-        renderItem={({ item }) => <Pressable onPress={() => ListFilm(item.id)}>
-          <ThemedText style={styles.listaGeneri}>{item.name}</ThemedText>
-        </Pressable>}
-      keyExtractor={item => item.id}
-      />
-
-      <ScrollView horizontal>
-        {listFilmGenre?.results.map((filmGenere: any) => (
-          <Pressable key={filmGenere.id} onPress={() => goToDetail(filmGenere.id)}>
-            <View style={styles.container_img}>
-              <Image
-                style={styles.img}
-                source={{
-                  uri: 'http://image.tmdb.org/t/p/w500/' + filmGenere.poster_path,
-                }} />
-            </View>
-            <ThemedText style={styles.filmTitle} numberOfLines={1}>{filmGenere.original_title}</ThemedText>
-          </Pressable>
-        ))}
-      </ScrollView>
-
     </SafeAreaView>
   );
 }
@@ -124,8 +166,12 @@ const styles = StyleSheet.create({
   Maincontainer: {
     paddingTop: "auto",
     paddingLeft: 20,
+    paddingRight: 20,
     height: "auto",
     width: "auto",
+  },
+  wrapper: {
+    width: "100%",
   },
   titleText: {
     fontSize: 20,
@@ -133,7 +179,6 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    paddingBottom: 10,
     paddingTop: 8,
   },
   scrollMenu: {
@@ -162,7 +207,21 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 5,
   },
-  listaGeneriOnPress: {
-
+  upcomingtext: {
+    height: "auto",
+    width: "40%",
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    color: "white",
+    fontSize: 22,
+    fontWeight: "bold",
+    paddingTop: 20,
+    paddingLeft: 5,
   },
+  upcomingImg: {
+    width: "100%", 
+    height: "100%", 
+    flex:1,
+    justifyContent: "center"
+  }
 });
