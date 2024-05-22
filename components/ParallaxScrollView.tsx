@@ -8,8 +8,9 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedView } from '@/components/ThemedView';
+import React from 'react';
 
-const HEADER_HEIGHT = 250;
+const HEADER_HEIGHT = 500;
 
 type Props = PropsWithChildren<{
   headerImage: ReactElement;
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 250,
+    height: 500,
     overflow: 'hidden',
   },
   content: {

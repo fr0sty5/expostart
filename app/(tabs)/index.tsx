@@ -5,6 +5,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Link, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function HomeScreen() {
@@ -24,7 +25,7 @@ export default function HomeScreen() {
       redirect: 'follow'
     } as const
 
-    fetch("https://api.themoviedb.org/3/discover/movie?language=it-IT", requestOptions)
+    fetch("https://api.themoviedb.org/3/movie/top_rated?language=it-IT", requestOptions)
       .then(response => response.json())
       .then(result => setData(result))
       .catch(error => console.log('error', error));
@@ -38,13 +39,30 @@ export default function HomeScreen() {
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView>
+    <View style={styles.Maincontainer}>
       <Text style={styles.titleText}>Welcome Here</Text>
 
-      <ThemedText style={styles.titleText}>Top Rated:</ThemedText>
-      <ScrollView horizontal>
+      <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
+      <ScrollView horizontal style={styles.scrollMenu}>
         {data?.results.map((film: any) => (
-          <Pressable style={styles.topRated} key={film.id} onPress={() => goToDetail(film.id)}>
+          <Pressable key={film.id} onPress={() => goToDetail(film.id)}>
+            <View style={styles.container_img}>
+              <Image
+                style={styles.img}
+                source={{
+                  uri: 'http://image.tmdb.org/t/p/w500/' + film.poster_path,
+                }} />
+            </View>
+            <ThemedText style={styles.filmTitle} numberOfLines={1}>{film.original_title}</ThemedText>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      <ThemedText style={styles.subTitle}></ThemedText>
+      <ScrollView horizontal style={styles.scrollMenu}>
+        {data?.results.map((film: any) => (
+          <Pressable key={film.id} onPress={() => goToDetail(film.id)}>
             <View style={styles.container_img}>
               <Image
                 style={styles.img}
@@ -57,10 +75,35 @@ export default function HomeScreen() {
         ))}
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  Maincontainer: {
+    paddingTop: "auto",
+    paddingLeft: 20,
+    height: "auto",
+    width: "auto",
+  },
+  titleText:{
+    color: "white",
+    fontSize: 20,
+  },
+  subTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 10,
+    paddingTop: 8,
+    color: "white",
+  },
+  scrollMenu:{
+    borderStyle: "solid",
+    borderBottomColor: "red",
+    borderBottomWidth: 3,
+    height: "auto",
+    width: "auto",
+  },
   img: {
     height: "100%",
     width: "100%",
@@ -70,27 +113,10 @@ const styles = StyleSheet.create({
   baseText: {
     fontFamily: 'Cochin',
   },
-  titleText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingBottom: 20,
-    color: "white",
-  },
-  topRated: {
-    padding: 5,
-    borderStyle: "solid",
-    borderBlockColor: "red",
-    borderWidth: 3,
-  },
   container_img: {
     height: 170,
     width: 120,
     padding: 5,
-  },
-  container: {
-    padding: 30,
-    height: "auto",
-    width: "auto",
   },
   filmTitle: {
     width: 120,
