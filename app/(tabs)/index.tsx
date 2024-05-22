@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import PagerView from 'react-native-pager-view';
 
 
 export default function HomeScreen() {
@@ -96,15 +97,19 @@ export default function HomeScreen() {
 
   const size = useWindowDimensions();
 
+  var [ isPress, setIsPress ] = React.useState(false);
+
+  
+
   return (
     <SafeAreaView style={styles.Maincontainer}>
       <ScrollView showsVerticalScrollIndicator>
         <ThemedText style={styles.titleText}>Welcome Here!!</ThemedText>
         <ThemedText style={styles.subTitle}>Upcoming:</ThemedText>
 
-        <ScrollView horizontal style={styles.wrapper}>
+        <PagerView style={styles.wrapper}>
           {listUpcoming?.results.map((upcomingFilm: any) => (
-            <Pressable key={upcomingFilm.id} onPress={() => goToDetail(upcomingFilm.id)}>
+            <Pressable key={upcomingFilm.id} onPress={() => goToDetail(upcomingFilm.id)} style={[{height:"100%", backgroundColor: "red"}]}>
               <ImageBackground resizeMode="cover" source={{ uri: "http://image.tmdb.org/t/p/w500/" + upcomingFilm.backdrop_path }}
                 style={[{ width: (size.width - 20), height: (size.width * 0.7), justifyContent: "center", marginRight: 20}]}>
                 <ThemedText style={styles.upcomingtext} numberOfLines={1}>
@@ -113,7 +118,7 @@ export default function HomeScreen() {
               </ImageBackground>
             </Pressable>
           ))}
-        </ScrollView>
+        </PagerView>
 
         <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
         <ScrollView horizontal style={styles.scrollMenu}>
@@ -171,6 +176,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     width: "100%",
+    height: 500,
   },
   titleText: {
     fontSize: 20,
@@ -219,7 +225,6 @@ const styles = StyleSheet.create({
   upcomingImg: {
     width: "100%",
     height: "100%",
-    flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
   }
 });
