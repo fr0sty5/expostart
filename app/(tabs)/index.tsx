@@ -1,18 +1,15 @@
-import { Image, StyleSheet, Platform, Text, Pressable, View, ScrollView } from 'react-native';
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function HomeScreen() {
 
-  const [data, setData] = useState<any>()
-
   const router = useRouter()
+
+  const [data, setData] = useState<any>()
 
   useEffect(() => {
     var myHeaders = new Headers();
@@ -36,13 +33,51 @@ export default function HomeScreen() {
     router.push("/detail/" + id)
   }
 
+  const [genre, setgenre] = useState<any>(null)
 
+  useEffect(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE");
+    myHeaders.append("accept", "application/json");
+
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
+      }
+    };
+
+    fetch('https://api.themoviedb.org/3/genre/movie/list?language=it', options)
+      .then(response => response.json())
+      .then(response => setgenre(response))
+      .catch(err => console.error(err));
+
+  }, [])
+
+  const [listFilmGenre, setlistFilmGenre] = useState<any>(null)
+
+  function ListFilm (id: string){
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
+      }
+    };
+    
+    fetch('https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=it-IT&page=1&sort_by=popularity.desc&with_genres='+id, options)
+      .then(response => response.json())
+      .then(response => setlistFilmGenre(response))
+      .catch(err => console.error(err));
+  }
+
+  console.log(listFilmGenre?.results)
 
   return (
-    <SafeAreaView>
-    <View style={styles.Maincontainer}>
-      <Text style={styles.titleText}>Welcome Here</Text>
+    <SafeAreaView style={styles.Maincontainer}>
 
+      <ThemedText style={styles.titleText}>Welcome Here</ThemedText>
       <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
       <ScrollView horizontal style={styles.scrollMenu}>
         {data?.results.map((film: any) => (
@@ -59,22 +94,32 @@ export default function HomeScreen() {
         ))}
       </ScrollView>
 
-      <ThemedText style={styles.subTitle}></ThemedText>
-      <ScrollView horizontal style={styles.scrollMenu}>
-        {data?.results.map((film: any) => (
-          <Pressable key={film.id} onPress={() => goToDetail(film.id)}>
-            <View style={styles.container_img}>
-              <Image
-                style={styles.img}
-                source={{
-                  uri: 'http://image.tmdb.org/t/p/w500/' + film.poster_path,
-                }} />
-            </View>
-            <ThemedText style={styles.filmTitle} numberOfLines={1}>{film.original_title}</ThemedText>
+      <ScrollView horizontal>
+        {genre?.genres.map((genere: any) => (
+          <Pressable style={[{
+            margin: 10,
+            padding: 5,
+          }]} onPress={() => ListFilm(genere.id)}>
+            <ThemedText>{genere.name}</ThemedText>
           </Pressable>
         ))}
       </ScrollView>
-    </View>
+
+      <ScrollView horizontal>
+        {listFilmGenre?.results.map((filmGenere: any) => (
+          <Pressable key={filmGenere.id} onPress={() => goToDetail(filmGenere.id)}>
+          <View style={styles.container_img}>
+            <Image
+              style={styles.img}
+              source={{
+                uri: 'http://image.tmdb.org/t/p/w500/' + filmGenere.poster_path,
+              }} />
+          </View>
+          <ThemedText style={styles.filmTitle} numberOfLines={1}>{filmGenere.original_title}</ThemedText>
+        </Pressable>
+        ))}
+      </ScrollView>
+      
     </SafeAreaView>
   );
 }
@@ -86,8 +131,7 @@ const styles = StyleSheet.create({
     height: "auto",
     width: "auto",
   },
-  titleText:{
-    color: "white",
+  titleText: {
     fontSize: 20,
   },
   subTitle: {
@@ -95,12 +139,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingBottom: 10,
     paddingTop: 8,
-    color: "white",
   },
-  scrollMenu:{
-    borderStyle: "solid",
-    borderBottomColor: "red",
-    borderBottomWidth: 3,
+  scrollMenu: {
     height: "auto",
     width: "auto",
   },
@@ -120,5 +160,6 @@ const styles = StyleSheet.create({
   },
   filmTitle: {
     width: 120,
+    padding: 5,
   },
 });
