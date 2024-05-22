@@ -1,10 +1,9 @@
-import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme, FlatList, ImageBackground, Dimensions, useWindowDimensions } from 'react-native';
+import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme, FlatList, Dimensions, useWindowDimensions } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import PagerView from 'react-native-pager-view';
-
+import UpComing from '@/feature/upComing';
 
 export default function HomeScreen() {
 
@@ -56,27 +55,7 @@ export default function HomeScreen() {
 
   }, [])
 
-  const [listUpcoming, setlistUpcoming] = useState<any>(null)
-
-  useEffect(() => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE");
-    myHeaders.append("accept", "application/json");
-
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
-      }
-    };
-
-    fetch('https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1', options)
-      .then(response => response.json())
-      .then(response => setlistUpcoming(response))
-      .catch(err => console.error(err));
-
-  }, [])
+  
 
   const [listFilmGenre, setlistFilmGenre] = useState<any>(null)
 
@@ -97,29 +76,14 @@ export default function HomeScreen() {
 
   const size = useWindowDimensions();
 
-  var [ isPress, setIsPress ] = React.useState(false);
-
-  
+  var [isPress, setIsPress] = React.useState(false);
 
   return (
     <SafeAreaView style={styles.Maincontainer}>
       <ScrollView showsVerticalScrollIndicator>
         <ThemedText style={styles.titleText}>Welcome Here!!</ThemedText>
-        <ThemedText style={styles.subTitle}>Upcoming:</ThemedText>
-
-        <PagerView style={styles.wrapper}>
-          {listUpcoming?.results.map((upcomingFilm: any) => (
-            <Pressable key={upcomingFilm.id} onPress={() => goToDetail(upcomingFilm.id)} style={[{height:"100%", backgroundColor: "red"}]}>
-              <ImageBackground resizeMode="cover" source={{ uri: "http://image.tmdb.org/t/p/w500/" + upcomingFilm.backdrop_path }}
-                style={[{ width: (size.width - 20), height: (size.width * 0.7), justifyContent: "center", marginRight: 20}]}>
-                <ThemedText style={styles.upcomingtext} numberOfLines={1}>
-                  {upcomingFilm.title}
-                </ThemedText>
-              </ImageBackground>
-            </Pressable>
-          ))}
-        </PagerView>
-
+       
+        <UpComing />
         <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
         <ScrollView horizontal style={styles.scrollMenu}>
           {data?.results.map((film: any) => (
@@ -175,6 +139,7 @@ const styles = StyleSheet.create({
     width: "auto",
   },
   wrapper: {
+    flex: 1,
     width: "100%",
     height: 500,
   },
@@ -220,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "white",
-    overflow:"hidden"
+    overflow: "hidden"
   },
   upcomingImg: {
     width: "100%",

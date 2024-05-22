@@ -83,7 +83,7 @@ export default function TabTwoScreen() {
                 </ThemedText>
                 <ThemedText style={styles.title}>Reviews:</ThemedText>
                 {listReviews?.results.map((review: any) => (
-                    <ThemedText style={styles.review}>{review.content}</ThemedText>
+                    <ThemedText key={review.id} style={styles.review}>{review.content}</ThemedText>
                 ))}
             </ParallaxScrollView>
         </Fragment>
