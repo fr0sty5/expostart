@@ -2,7 +2,7 @@ import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme, FlatLis
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import UpComing from '@/feature/upComing';
 
 export default function HomeScreen() {
@@ -55,7 +55,7 @@ export default function HomeScreen() {
 
   }, [])
 
-  
+
 
   const [listFilmGenre, setlistFilmGenre] = useState<any>(null)
 
@@ -74,59 +74,55 @@ export default function HomeScreen() {
       .catch(err => console.error(err));
   }
 
-  const size = useWindowDimensions();
+  const inset = useSafeAreaInsets();
 
   var [isPress, setIsPress] = React.useState(false);
 
   return (
-    <SafeAreaView style={styles.Maincontainer}>
-      <ScrollView showsVerticalScrollIndicator>
-        <ThemedText style={styles.titleText}>Welcome Here!!</ThemedText>
-       
-        <UpComing />
-        <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
-        <ScrollView horizontal style={styles.scrollMenu}>
-          {data?.results.map((film: any) => (
-            <Pressable key={film.id} onPress={() => goToDetail(film.id)}>
-              <View style={styles.container_img}>
-                <Image
-                  style={styles.img}
-                  source={{
-                    uri: 'http://image.tmdb.org/t/p/w500/' + film.poster_path,
-                  }} />
-              </View>
-              <ThemedText style={styles.filmTitle} numberOfLines={1}>{film.original_title}</ThemedText>
-            </Pressable>
-          ))}
-        </ScrollView>
-
-        <ThemedText style={styles.subTitle}>Your Choice:</ThemedText>
-        <FlatList
-          horizontal={true}
-          data={genre?.genres}
-          renderItem={({ item }) => <Pressable onPress={() => ListFilm(item.id)}>
-            <ThemedText style={styles.listaGeneri}>{item.name}</ThemedText>
-          </Pressable>}
-          keyExtractor={item => item.id}
-        />
-
-        <ScrollView horizontal>
-          {listFilmGenre?.results.map((filmGenere: any) => (
-            <Pressable key={filmGenere.id} onPress={() => goToDetail(filmGenere.id)}>
-              <View style={styles.container_img}>
-                <Image
-                  style={styles.img}
-                  source={{
-                    uri: 'http://image.tmdb.org/t/p/w500/' + filmGenere.poster_path,
-                  }} />
-              </View>
-              <ThemedText style={styles.filmTitle} numberOfLines={1}>{filmGenere.original_title}</ThemedText>
-            </Pressable>
-          ))}
-        </ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: inset.top, paddingHorizontal: 20, paddingBottom: 10 }}>
+      <ThemedText style={styles.titleText}>Welcome Here!!</ThemedText>
+      <UpComing />
+      <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
+      <ScrollView horizontal style={styles.scrollMenu}>
+        {data?.results.map((film: any) => (
+          <Pressable key={film.id} onPress={() => goToDetail(film.id)}>
+            <View style={styles.container_img}>
+              <Image
+                style={styles.img}
+                source={{
+                  uri: 'https://image.tmdb.org/t/p/w500' + film.poster_path,
+                }} />
+            </View>
+            <ThemedText style={styles.filmTitle} numberOfLines={1}>{film.original_title}</ThemedText>
+          </Pressable>
+        ))}
       </ScrollView>
 
-    </SafeAreaView>
+      <ThemedText style={styles.subTitle}>Your Choice:</ThemedText>
+      <FlatList
+        horizontal={true}
+        data={genre?.genres}
+        renderItem={({ item }) => <Pressable onPress={() => ListFilm(item.id)}>
+          <ThemedText style={styles.listaGeneri}>{item.name}</ThemedText>
+        </Pressable>}
+        keyExtractor={item => item.id}
+      />
+
+      <ScrollView horizontal>
+        {listFilmGenre?.results.map((filmGenere: any) => (
+          <Pressable key={filmGenere.id} onPress={() => goToDetail(filmGenere.id)}>
+            <View style={styles.container_img}>
+              <Image
+                style={styles.img}
+                source={{
+                  uri: 'https://image.tmdb.org/t/p/w500' + filmGenere.poster_path,
+                }} />
+            </View>
+            <ThemedText style={styles.filmTitle} numberOfLines={1}>{filmGenere.original_title}</ThemedText>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </ScrollView>
   );
 }
 

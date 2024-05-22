@@ -1,6 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import PagerView from "react-native-pager-view";
 
 const KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE"
 
@@ -27,25 +28,24 @@ export default function UpComing() {
 
     }, [])
 
-    console.log(listUpcoming)
+    console.log("https://image.tmdb.org/t/p/w500" + listUpcoming?.results[0].backdrop_path)
 
     return (
         <>
             <ThemedText style={styles.subTitle}>Upcoming:</ThemedText>
-
-            <ScrollView horizontal style={styles.wrapper}>
+            {listUpcoming?.results && <PagerView  style={styles.wrapper} >
                 {listUpcoming?.results?.map((upcomingFilm: any) => (
-                    <View collapsable={false} key={upcomingFilm.id} style={[{ height: 500 }]}>
-                        <ThemedText style={styles.upcomingtext} numberOfLines={1}>
+                    <View testID="pager-view-content" collapsable={false} key={upcomingFilm.id} style={[{ height: 500, width: "100%", position: "relative",  overflow: "hidden" }]}>
+                        <Text style={styles.upcomingtext} numberOfLines={1}>
                             {upcomingFilm.title}
-                        </ThemedText>
+                        </Text>
                         <Image
                             resizeMode="cover"
-                            source={{ uri: "http://image.tmdb.org/t/p/w500/" + upcomingFilm.backdrop_path }}
-                            style={[{ position: "absolute", top: 0, right:0 , left: 0, bottom: 0 }]} />
+                            source={{ uri: "https://image.tmdb.org/t/p/w500" + upcomingFilm.backdrop_path }}
+                            style={[{ position: "absolute", top: 0, right:4 , left: 4, bottom: 0, borderRadius: 20 }]} />
                     </View>
                 ))}
-            </ScrollView>
+            </PagerView>}
         </>
     )
 }
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         paddingTop: 8,
+        marginBottom: 8,
     },
     container: {
         flex: 1,
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 10,
         left: 20,
+        zIndex: 200,
         fontFamily: "arial",
         fontWeight: "bold",
         textAlign: "center",
