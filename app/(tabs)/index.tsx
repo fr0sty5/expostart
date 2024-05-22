@@ -1,10 +1,8 @@
 import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme, FlatList, ImageBackground, Dimensions, useWindowDimensions } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { resolvePlugin } from '@babel/core';
-import { getReactNavigationConfig } from 'expo-router/build/getReactNavigationConfig';
 
 
 export default function HomeScreen() {
@@ -101,18 +99,18 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.Maincontainer}>
       <ScrollView showsVerticalScrollIndicator>
-        <ThemedText style={styles.titleText}>Welcome Here</ThemedText>
+        <ThemedText style={styles.titleText}>Welcome Here!!</ThemedText>
         <ThemedText style={styles.subTitle}>Upcoming:</ThemedText>
 
         <ScrollView horizontal style={styles.wrapper}>
           {listUpcoming?.results.map((upcomingFilm: any) => (
             <Pressable key={upcomingFilm.id} onPress={() => goToDetail(upcomingFilm.id)}>
-                <ImageBackground resizeMode="cover" source={{ uri: "http://image.tmdb.org/t/p/w500/" + upcomingFilm.backdrop_path }} 
-                style={[{ width: (size.width-20), height: (size.width*0.7), justifyContent: "center", marginRight:20, borderRadius: 30}]}>
-                  <ThemedText style={styles.upcomingtext} numberOfLines={1}>
-                    {upcomingFilm.title}
-                  </ThemedText>
-                </ImageBackground>
+              <ImageBackground resizeMode="cover" source={{ uri: "http://image.tmdb.org/t/p/w500/" + upcomingFilm.backdrop_path }}
+                style={[{ width: (size.width - 20), height: (size.width * 0.7), justifyContent: "center", marginRight: 20}]}>
+                <ThemedText style={styles.upcomingtext} numberOfLines={1}>
+                  {upcomingFilm.title}
+                </ThemedText>
+              </ImageBackground>
             </Pressable>
           ))}
         </ScrollView>
@@ -158,6 +156,7 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
       </ScrollView>
+
     </SafeAreaView>
   );
 }
@@ -208,20 +207,19 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   upcomingtext: {
-    height: "auto",
     width: "40%",
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    color: "white",
-    fontSize: 22,
+    height: "80%",
+    fontSize: 20,
+    fontFamily: "arial",
     fontWeight: "bold",
-    paddingTop: 20,
-    paddingLeft: 5,
+    textAlign: "center",
+    color: "white",
+    overflow:"hidden"
   },
   upcomingImg: {
-    width: "100%", 
-    height: "100%", 
-    flex:1,
+    width: "100%",
+    height: "100%",
+    flex: 1,
     justifyContent: "center"
   }
 });
