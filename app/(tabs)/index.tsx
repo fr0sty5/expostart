@@ -1,13 +1,22 @@
-import { Image, StyleSheet, Pressable, View, ScrollView, useColorScheme, FlatList, Dimensions, useWindowDimensions } from 'react-native';
+import { Image, StyleSheet, Pressable, View, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import UpComing from '@/feature/upComing';
+import Explorer from '@/feature/explore';
 
 export default function HomeScreen() {
 
   const router = useRouter()
+
+  const goToDetail = (id: string) => {
+    router.push("/detail/" + id)
+  }
+
+  const goToList = (id: string) => {
+    router.push("/detail/g" + id)
+  }
 
   const [data, setData] = useState<any>()
 
@@ -29,16 +38,9 @@ export default function HomeScreen() {
 
   }, [])
 
-  const goToDetail = (id: string) => {
-    router.push("/detail/" + id)
-  }
-
   const [genre, setgenre] = useState<any>(null)
 
   useEffect(() => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE");
-    myHeaders.append("accept", "application/json");
 
     const options = {
       method: 'GET',
@@ -54,8 +56,6 @@ export default function HomeScreen() {
       .catch(err => console.error(err));
 
   }, [])
-
-
 
   const [listFilmGenre, setlistFilmGenre] = useState<any>(null)
 
@@ -76,12 +76,13 @@ export default function HomeScreen() {
 
   const inset = useSafeAreaInsets();
 
-  var [isPress, setIsPress] = React.useState(false);
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: inset.top, paddingHorizontal: 20, paddingBottom: 10 }}>
       <ThemedText style={styles.titleText}>Welcome Here!!</ThemedText>
+
+      <Explorer />
       <UpComing />
+
       <ThemedText style={styles.subTitle}>Top Rated:</ThemedText>
       <ScrollView horizontal style={styles.scrollMenu}>
         {data?.results.map((film: any) => (
@@ -99,14 +100,18 @@ export default function HomeScreen() {
       </ScrollView>
 
       <ThemedText style={styles.subTitle}>Your Choice:</ThemedText>
-      <FlatList
-        horizontal={true}
-        data={genre?.genres}
-        renderItem={({ item }) => <Pressable onPress={() => ListFilm(item.id)}>
-          <ThemedText style={styles.listaGeneri}>{item.name}</ThemedText>
-        </Pressable>}
-        keyExtractor={item => item.id}
-      />
+      <ScrollView horizontal style={[{ height: 170, width: 100, flex: 2 }]}>
+        <View style={styles.container_img}>
+          {genre?.genres.map((genere: any) => (
+            <Pressable key={genere.id} onPress={() => goToList(genere.id)}>
+              <ThemedText>{genere.id}</ThemedText>
+              <Image
+                style={styles.img}
+                source={require("../../assets/generi/Fantasy.png")} />
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
 
       <ScrollView horizontal>
         {listFilmGenre?.results.map((filmGenere: any) => (
@@ -122,6 +127,7 @@ export default function HomeScreen() {
           </Pressable>
         ))}
       </ScrollView>
+
     </ScrollView>
   );
 }
@@ -173,19 +179,4 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 5,
   },
-  upcomingtext: {
-    width: "40%",
-    height: "80%",
-    fontSize: 20,
-    fontFamily: "arial",
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "white",
-    overflow: "hidden"
-  },
-  upcomingImg: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-  }
 });

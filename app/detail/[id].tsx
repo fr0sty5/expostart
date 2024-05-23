@@ -1,10 +1,11 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import React, { Fragment, useEffect, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Rating } from "react-native-ratings";
 
 export default function TabTwoScreen() {
 
@@ -73,9 +74,13 @@ export default function TabTwoScreen() {
                         style={styles.reactLogo}
                     />
                 }>
-                <ThemedText style={styles.title}>{data.original_title}</ThemedText>
-                <ThemedText>
-                    {data.vote_average}  ({data.vote_count})
+
+                
+                <ThemedText style={[{width:"100%", backgroundColor:"gray"}]}>
+                    <ThemedText style={styles.title}>{data.original_title}</ThemedText>
+                <View style={[{position:"relative", alignSelf:"center", justifyContent: "flex-end"}]}>
+                    <Rating startingValue={data.vote_average} ratingCount={10} imageSize={20} readonly />
+                </View>
                 </ThemedText>
                 <ThemedText style={styles.information}>{data.runtime}m    {'\u2B24'}    {data.release_date} </ThemedText>
                 <ThemedText style={styles.textContent}>
@@ -108,6 +113,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 22,
         fontWeight: "bold",
+        width:150,
     },
     textContent: {
         fontSize: 14,
