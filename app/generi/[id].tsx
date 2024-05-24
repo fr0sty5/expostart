@@ -37,12 +37,14 @@ export default function Tablistfilm() {
 
     return (
         <Fragment>
-            <Pressable
-                style={[styles.backButton, {top: 10}]}
-                onPress={() => router.back()} >
-                <Ionicons name="arrow-back" size={24} color="black" />
-            </Pressable>
-            {listFilmGenre?.results &&<ScrollView style={styles.scrollMenu}>
+            <SafeAreaView>
+                <Pressable
+                    style={[styles.backButton, { top: 10 }]}
+                    onPress={() => router.back()} >
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </Pressable>
+            </SafeAreaView>
+            {listFilmGenre?.results && <ScrollView style={styles.scrollMenu}>
                 <View style={styles.container}>
                     {listFilmGenre?.results.map((film: any) => (
                         <View key={film.id} style={[styles.column]}>
@@ -61,13 +63,13 @@ export default function Tablistfilm() {
                     ))}
                 </View>
             </ScrollView>}
-            <SafeAreaView style={[{flexDirection: 'row', justifyContent:'space-around'}]}>
+            <SafeAreaView style={[{ flexDirection: 'row', justifyContent: 'space-around' }]}>
                 <Pressable style={[{}]} onPress={() => {
-                    if(number_page > 1)
-                        setnumber_page(number_page-1)
+                    if (number_page > 1)
+                        setnumber_page(number_page - 1)
                 }}><ThemedText>Previous Page</ThemedText></Pressable>
                 <Pressable style={[{}]} onPress={() => {
-                    setnumber_page(number_page+1)
+                    setnumber_page(number_page + 1)
                 }}><ThemedText>NextPage</ThemedText></Pressable>
             </SafeAreaView>
         </Fragment>
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
     element: {
         width: "100%",
         height: "auto",
-        alignItems:"center",
+        alignItems: "center",
     },
     subTitle: {
         fontSize: 16,

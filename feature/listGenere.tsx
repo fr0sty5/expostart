@@ -5,6 +5,26 @@ import { useRouter } from 'expo-router';
 
 export default function TabListGenere() {
 
+    const genereImg = {
+        Animazione:require('./../assets/generi/Animazione.png'),
+        Avventura:require("./../assets/generi/Avventura.png"),
+        Azione:require("./../assets/generi/Azione.png"),
+        Commedia:require("./../assets/generi/Commedia.png"),
+        Crime:require("./../assets/generi/Crime.png"),
+        Documentario:require("./../assets/generi/Documentario.png"),
+        Dramma:require("./../assets/generi/Dramma.png"),
+        Famiglia:require("./../assets/generi/Famiglia.png"),
+        Fantasy:require("./../assets/generi/Fantasy.png"),
+        Storia:require("./../assets/generi/Storia.png"),
+        Horror:require("./../assets/generi/Horror.png"),
+        Musica:require("./../assets/generi/Musica.png"),
+        Mistero:require("./../assets/generi/Mistero.png"),
+        Fantascienza:require("./../assets/generi/Fantascienza.png"),
+        Thriller:require("./../assets/generi/Thriller.png"),
+        Guerra:require("./../assets/generi/Guerra.png"),
+        Western:require("./../assets/generi/Western.png"),
+        Romance:require("./../assets/generi/Romance.png")
+    }
     const router = useRouter()
 
     const goToList = (id: string) => {
@@ -40,9 +60,7 @@ export default function TabListGenere() {
                             <Image
                                 style={styles.img}
                                 resizeMode='contain'
-                                source={{
-                                    uri: "./../assets/generi/" + genere.name + ".png",
-                                  }} />
+                                source={genereImg[genere.name]} />
                             <ThemedText style={styles.genereName}>{genere.name}</ThemedText>
                         </Pressable>
                     ))}
@@ -51,6 +69,7 @@ export default function TabListGenere() {
 
         </Fragment>
     );
+    
 };
 
 const styles = StyleSheet.create({

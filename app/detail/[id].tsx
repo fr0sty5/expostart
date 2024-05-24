@@ -107,7 +107,7 @@ export default function TabDetail() {
                 </View>
 
                 <View style={styles.information}>
-                    <ThemedText>
+                    <ThemedText style={[{alignSelf:"center"}]}>
                         {data.runtime}m    <ThemedText style={[{ fontSize: 10 }]}>{'\u2B24'} </ThemedText>   {data.release_date}
                     </ThemedText>
                 </View>
@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         color: "black",
         textAlign: "center",
-        
     },
     backButton: {
         position: "absolute",
