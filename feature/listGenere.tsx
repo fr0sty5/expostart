@@ -7,8 +7,8 @@ export default function TabListGenere() {
 
     const router = useRouter()
 
-    const goToList = (idgenere: string) => {
-        router.push("/detail/Genere" + idgenere)
+    const goToList = (id: string) => {
+        router.push("/generi/" + id)
     }
 
     const [genre, setgenre] = useState<any>(null)
@@ -40,7 +40,9 @@ export default function TabListGenere() {
                             <Image
                                 style={styles.img}
                                 resizeMode='contain'
-                                source={require("../assets/generi/"+genere.name+".png")} />
+                                source={{
+                                    uri: "./../assets/generi/" + genere.name + ".png",
+                                  }} />
                             <ThemedText style={styles.genereName}>{genere.name}</ThemedText>
                         </Pressable>
                     ))}
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
         height: "100%",
         width: "100%",
         overflow: "hidden",
+        borderRadius: 20,
     },
     container_img: {
         height: 170,
@@ -71,12 +74,12 @@ const styles = StyleSheet.create({
     genereName: {
         width: "auto",
         position: "absolute",
-        bottom: 10,
-        left: 5,
+        bottom: 12,
+        left: 7,
         zIndex: 200,
         textShadowColor: 'black',
         textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 15,
+        textShadowRadius:7,
         color: "white",
         fontWeight: "bold"
     },

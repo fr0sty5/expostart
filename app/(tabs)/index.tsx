@@ -15,10 +15,6 @@ export default function HomeScreen() {
     router.push("/detail/" + id)
   }
 
-  const goToList = (id: string) => {
-    router.push("/detail/g" + id)
-  }
-
   const [data, setData] = useState<any>()
 
   useEffect(() => {
