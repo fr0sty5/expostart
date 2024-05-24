@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import UpComing from '@/feature/upComing';
 import Explorer from '@/feature/explore';
+import ListaGenere from '@/feature/listGenere';
 
 export default function HomeScreen() {
 
@@ -33,46 +34,10 @@ export default function HomeScreen() {
 
     fetch("https://api.themoviedb.org/3/movie/top_rated?language=it-IT", requestOptions)
       .then(response => response.json())
-      .then(result => setData(result))
-      .catch(error => console.log('error', error));
-
-  }, [])
-
-  const [genre, setgenre] = useState<any>(null)
-
-  useEffect(() => {
-
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
-      }
-    };
-
-    fetch('https://api.themoviedb.org/3/genre/movie/list?language=it', options)
-      .then(response => response.json())
-      .then(response => setgenre(response))
+      .then(response => setData(response))
       .catch(err => console.error(err));
 
   }, [])
-
-  const [listFilmGenre, setlistFilmGenre] = useState<any>(null)
-
-  function ListFilm(id: string) {
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
-      }
-    };
-
-    fetch('https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=it-IT&page=1&sort_by=popularity.desc&with_genres=' + id, options)
-      .then(response => response.json())
-      .then(response => setlistFilmGenre(response))
-      .catch(err => console.error(err));
-  }
 
   const inset = useSafeAreaInsets();
 
@@ -99,34 +64,7 @@ export default function HomeScreen() {
         ))}
       </ScrollView>
 
-      <ThemedText style={styles.subTitle}>Your Choice:</ThemedText>
-      <ScrollView horizontal style={[{ height: 170, width: 100, flex: 2 }]}>
-        <View style={styles.container_img}>
-          {genre?.genres.map((genere: any) => (
-            <Pressable key={genere.id} onPress={() => goToList(genere.id)}>
-              <ThemedText>{genere.id}</ThemedText>
-              <Image
-                style={styles.img}
-                source={require("../../assets/generi/Fantasy.png")} />
-            </Pressable>
-          ))}
-        </View>
-      </ScrollView>
-
-      <ScrollView horizontal>
-        {listFilmGenre?.results.map((filmGenere: any) => (
-          <Pressable key={filmGenere.id} onPress={() => goToDetail(filmGenere.id)}>
-            <View style={styles.container_img}>
-              <Image
-                style={styles.img}
-                source={{
-                  uri: 'https://image.tmdb.org/t/p/w500' + filmGenere.poster_path,
-                }} />
-            </View>
-            <ThemedText style={styles.filmTitle} numberOfLines={1}>{filmGenere.original_title}</ThemedText>
-          </Pressable>
-        ))}
-      </ScrollView>
+      <ListaGenere />
 
     </ScrollView>
   );

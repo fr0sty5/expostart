@@ -6,8 +6,9 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Rating } from "react-native-ratings";
+import { ThemedView } from '@/components/ThemedView';
 
-export default function TabTwoScreen() {
+export default function TabDetail() {
 
     const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -26,10 +27,12 @@ export default function TabTwoScreen() {
 
         fetch("https://api.themoviedb.org/3/movie/" + id + "?language=it-IT", requestOptions)
             .then(response => response.json())
-            .then(result => setData(result))
-            .catch(error => console.log('error', error));
+            .then(response => setData(response))
+            .catch(err => console.error(err));
 
     }, [])
+
+    setData
 
     const [listReviews, setlistReviews] = useState<any>(null)
 
@@ -75,13 +78,11 @@ export default function TabTwoScreen() {
                     />
                 }>
 
-                
-                <ThemedText style={[{width:"100%", backgroundColor:"gray"}]}>
-                    <ThemedText style={styles.title}>{data.original_title}</ThemedText>
-                <View style={[{position:"relative", alignSelf:"center", justifyContent: "flex-end"}]}>
+                <ThemedText style={styles.title}>{data.original_title}</ThemedText>
+                <View style={[{ position: "relative", justifyContent: "flex-end" }]}>
                     <Rating startingValue={data.vote_average} ratingCount={10} imageSize={20} readonly />
+                    <ThemedText style={[{ position: "absolute", right:0}]} >({data.vote_count})</ThemedText>
                 </View>
-                </ThemedText>
                 <ThemedText style={styles.information}>{data.runtime}m    {'\u2B24'}    {data.release_date} </ThemedText>
                 <ThemedText style={styles.textContent}>
                     {data.overview}
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 22,
         fontWeight: "bold",
-        width:150,
+        width: 150,
     },
     textContent: {
         fontSize: 14,

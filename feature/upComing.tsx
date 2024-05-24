@@ -40,21 +40,11 @@ export default function UpComing() {
             {listUpcoming?.results && <PagerView style={styles.wrapper} >
                 {listUpcoming?.results?.map((upcomingFilm: any) => (
                     <View testID="pager-view-content" collapsable={false} key={upcomingFilm.id} style={[{ height: "100%", width: "100%", position: "relative", overflow: "hidden" }]}>
-                       <Pressable key={upcomingFilm.id} onPress={() => goToDetail(upcomingFilm.id)} style={[{height:"100%", width:"100%"}]}>
-                        <Text style={[{
-                            width:"auto",
-                                fontSize: 12,
-                                top: 100,
-                                left: 13,
-                                zIndex: 200,
-                                textShadowColor: 'black', 
-                                textShadowOffset: { width: 1, height: 1 }, 
-                                textShadowRadius: 12,
-                                color:"white",
-                            }]}>{upcomingFilm.release_date}</Text>
-                        <ThemedText style={styles.upcomingtext} numberOfLines={2}>
-                            {upcomingFilm.title}
-                        </ThemedText>
+                        <Pressable key={upcomingFilm.id} onPress={() => goToDetail(upcomingFilm.id)} style={[{ height: "100%", width: "100%" }]}>
+                            <Text style={styles.titoloUpcoming}>{upcomingFilm.release_date}</Text>
+                            <ThemedText style={styles.upcomingtext} numberOfLines={2}>
+                                {upcomingFilm.title}
+                            </ThemedText>
                             <Image
                                 resizeMode="cover"
                                 source={{ uri: "https://image.tmdb.org/t/p/w500" + upcomingFilm.backdrop_path }}
@@ -90,12 +80,23 @@ const styles = StyleSheet.create({
         height: "100%",
         fontSize: 18,
         position: "absolute",
-        top: 120,
+        top: 135,
         left: 13,
         zIndex: 200,
         fontWeight: "bold",
-        textShadowColor: 'black', 
+        textShadowColor: 'black',
         textShadowRadius: 10,
-        color:"white",
+        color: "white",
     },
+    titoloUpcoming: {
+        width: "auto",
+        fontSize: 12,
+        top: 120,
+        left: 13,
+        zIndex: 200,
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 12,
+        color: "white",
+    }
 });
