@@ -47,6 +47,7 @@ export default function TabTwoScreen() {
         placeholder="Search Here..."
         keyboardType="ascii-capable"
         onSubmitEditing={handleSubmit}
+
       />
       {searchResults.length > 0 && (
         <ScrollView horizontal style={styles.scrollMenu}>

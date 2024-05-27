@@ -2,14 +2,21 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { Image, Linking, Pressable, StyleSheet, View } from 'react-native';
 import React, { Fragment, useEffect, useState } from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Rating } from "react-native-ratings";
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function TabDetail() {
 
     const { id } = useLocalSearchParams<{ id: string }>();
+
+    const router = useRouter()
+
+  const goToDetail = (id: string) => {
+    router.push("/detail/" + id)
+  }
 
     const [data, setData] = useState<any>(null)
 
@@ -48,26 +55,27 @@ export default function TabDetail() {
             .catch(err => console.error(err));
     }, [])
 
-    const [listReviews, setlistReviews] = useState<any>(null);
+    const [ recommendetions, setRecommendetions ] = useState<any>(null);
 
     useEffect(() => {
         const options = {
             method: 'GET',
             headers: {
-                accept: 'application/json',
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
+              accept: 'application/json',
+              Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODdkMTNiZjIyN2IxM2Q3NWQ3Mjk2OTY0NjQ1OGZiMiIsInN1YiI6IjY2NGM0NzliYjMxYTg1YjNiNTY2OWYxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jWmBf7QPdrNFVME02-nRhg6NcDUd7Wv4NVUX80EGzRE'
             }
-        };
-
-        fetch("https://api.themoviedb.org/3/movie/" + id + "/reviews?language=en-US&page=1", options)
+          };
+          
+          fetch('https://api.themoviedb.org/3/movie/'+id+'/recommendations?language=en-US&page=1', options)
             .then(response => response.json())
-            .then(response => setlistReviews(response))
+            .then(response => setRecommendetions(response))
             .catch(err => console.error(err));
     }, [])
 
-    if (!data) return null
 
     const inset = useSafeAreaInsets()
+
+    if (!data) return null
 
     return (
         <Fragment>
@@ -87,7 +95,6 @@ export default function TabDetail() {
                     />
                 }>
 
-
                 {link?.results[1] && <Pressable
                     onPress={() => {
                         if (link?.results[1].site === "YouTube")
@@ -106,16 +113,39 @@ export default function TabDetail() {
                     <ThemedText style={[{ position: "absolute", right: 0, fontSize: 12, justifyContent: "center" }]}>({data.vote_count})</ThemedText>
                 </View>
 
+                <View style={styles.generi_container}>
+                    {data?.genres.map((genere: any) => (
+                        <ThemedText style={styles.textContent} key={genere.id}>{genere.name}</ThemedText>
+                    ))}
+                </View>
+
                 <View style={styles.information}>
-                    <ThemedText style={[{alignSelf:"center"}]}>
+                    <ThemedText style={[{ alignSelf: "center" }]}>
                         {data.runtime}m    <ThemedText style={[{ fontSize: 10 }]}>{'\u2B24'} </ThemedText>   {data.release_date}
                     </ThemedText>
                 </View>
                 <ThemedText style={styles.textContent}>{data.overview}</ThemedText>
-                <ThemedText style={styles.title}>Reviews:</ThemedText>
-                {listReviews?.results.map((review: any) => (
-                    <ThemedText key={review.id} style={styles.review}>{review.content}</ThemedText>
-                ))}
+                <View style={[{ flexDirection: "row" ,  borderStyle: "solid", borderColor: "gray", borderTopWidth: 4, paddingTop: 8 }]}>
+                    <ThemedText style={[{ fontSize: 22, fontWeight: "bold" }]}>Studio:  </ThemedText><ThemedText>{data?.production_companies[0].name}</ThemedText>
+                </View>
+                <View style={[{ flexDirection: "row", borderStyle: "solid", borderColor: "gray", borderBottomWidth: 4, paddingBottom: 8}]}>
+                    <ThemedText style={[{ fontSize: 22, fontWeight: "bold" }]}>Nazione:  </ThemedText><ThemedText>{data?.production_countries[0].name}</ThemedText>
+                </View>
+
+                <View style={styles.container}>
+                    {recommendetions?.results.map((filmRaccomandato:any) => (
+                        <Pressable key={filmRaccomandato.id} onPress={() => goToDetail(filmRaccomandato.id)}>
+                        <View style={styles.container_img}>
+                          <Image
+                            style={styles.img}
+                            source={{
+                              uri: 'https://image.tmdb.org/t/p/w500' + filmRaccomandato.poster_path,
+                            }} />
+                        </View>
+                        <ThemedText style={styles.filmTitle} numberOfLines={1}>{filmRaccomandato.original_title}</ThemedText>
+                      </Pressable>
+                    ))}
+                </View>
             </ParallaxScrollView>
         </Fragment>
     );
@@ -145,7 +175,7 @@ const styles = StyleSheet.create({
     },
     information: {
         width: "auto",
-        backgroundColor:"lightgreen",
+        backgroundColor: "lightgreen",
         borderRadius: 8,
         color: "black",
         textAlign: "center",
@@ -158,12 +188,15 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         padding: 8,
     },
-    review: {
+    generi_container: {
         borderColor: "gray",
         borderStyle: "solid",
         borderWidth: 3,
-        borderRadius: 10,
-        padding: 12,
+        borderRadius: 3,
+        padding: 2,
+        alignContent: "center",
+        flexDirection: "row",
+        justifyContent: "space-around",
     },
     playButton: {
         position: "absolute",
@@ -175,5 +208,26 @@ const styles = StyleSheet.create({
         width: 30,
         alignItems: "center",
         justifyContent: "center",
-    }
+    },
+    container_img: {
+        height: 170,
+        width: 120,
+        padding: 5,
+      },
+      filmTitle: {
+        width: 120,
+        padding: 5,
+      },
+      img: {
+        height: "100%",
+        width: "100%",
+        borderRadius: 20,
+        overflow: "hidden",
+      },
+      container: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: "flex-start",
+    },
 });

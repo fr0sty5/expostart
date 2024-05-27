@@ -12,6 +12,8 @@ export default function Tablistfilm() {
         router.push("/detail/" + id);
     };
 
+    
+
     const [number_page, setnumber_page] = useState<any>(1);
 
     const { id } = useLocalSearchParams<{ id: string }>();
