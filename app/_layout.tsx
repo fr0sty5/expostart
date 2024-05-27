@@ -35,7 +35,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="detail/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="generi/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="generi/[id]" />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

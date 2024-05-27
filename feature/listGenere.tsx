@@ -1,7 +1,8 @@
 import { StyleSheet, Image, Pressable, ScrollView, View } from 'react-native';
 import React, { Fragment, useEffect, useState } from 'react';
 import { ThemedText } from '@/components/ThemedText';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
+import { isNewBackTitleImplementation } from 'react-native-screens';
 
 export default function TabListGenere() {
 
@@ -20,10 +21,11 @@ export default function TabListGenere() {
         Musica:require("./../assets/generi/Musica.png"),
         Mistero:require("./../assets/generi/Mistero.png"),
         Fantascienza:require("./../assets/generi/Fantascienza.png"),
+        televisione_film:require("./../assets/generi/televisione film.png"),
         Thriller:require("./../assets/generi/Thriller.png"),
         Guerra:require("./../assets/generi/Guerra.png"),
         Western:require("./../assets/generi/Western.png"),
-        Romance:require("./../assets/generi/Romance.png")
+        Romance:require("./../assets/generi/Romance.png"),
     }
     const router = useRouter()
 
@@ -54,13 +56,13 @@ export default function TabListGenere() {
 
             <ThemedText style={styles.subTitle}>Your Choice:</ThemedText>
             <ScrollView horizontal style={styles.scrollMenu}>
-                <View style={styles.container_img}>
+                <View>
                     {genre?.genres.map((genere: any) => (
-                        <Pressable key={genere.id} onPress={() => goToList(genere.id)}>
-                            <Image
+                        <Pressable style={styles.container_img}key={genere.id} onPress={() => goToList(genere.id)}>
+                           <Image
                                 style={styles.img}
                                 resizeMode='contain'
-                                source={genereImg[genere.name]} />
+                                source={genereImg[(genere.name).replace("_", " ")]} />
                             <ThemedText style={styles.genereName}>{genere.name}</ThemedText>
                         </Pressable>
                     ))}
@@ -83,6 +85,7 @@ const styles = StyleSheet.create({
         width: "100%",
         overflow: "hidden",
         borderRadius: 20,
+        position:"relative",
     },
     container_img: {
         height: 170,
@@ -107,7 +110,5 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     scrollMenu: {
-        height: "auto",
-        width: "auto",
     },
 });

@@ -37,13 +37,6 @@ export default function Tablistfilm() {
 
     return (
         <Fragment>
-            <SafeAreaView>
-                <Pressable
-                    style={[styles.backButton, { top: 10 }]}
-                    onPress={() => router.back()} >
-                    <Ionicons name="arrow-back" size={24} color="black" />
-                </Pressable>
-            </SafeAreaView>
             {listFilmGenre?.results && <ScrollView style={styles.scrollMenu}>
                 <View style={styles.container}>
                     {listFilmGenre?.results.map((film: any) => (
@@ -63,7 +56,7 @@ export default function Tablistfilm() {
                     ))}
                 </View>
             </ScrollView>}
-            <SafeAreaView style={[{ flexDirection: 'row', justifyContent: 'space-around' }]}>
+            <SafeAreaView style={[{ flexDirection: 'row', justifyContent: 'space-around', bottom: 0 }]}>
                 <Pressable style={[{}]} onPress={() => {
                     if (number_page > 1)
                         setnumber_page(number_page - 1)
@@ -127,13 +120,5 @@ const styles = StyleSheet.create({
     column: {
         width: '50%',
         padding: 5,
-    },
-    backButton: {
-        position: "absolute",
-        left: 10,
-        zIndex: 500,
-        borderRadius: 20,
-        backgroundColor: "white",
-        padding: 8,
     },
 });
